@@ -34,7 +34,6 @@ public struct APIManager {
     ///  - language: The locale to use for the App Store notes. The default result the API returns is equivalent to passing "en_us", so passing `nil` is equivalent to passing "en_us".
     public init(country: AppStoreCountry = .unitedStates, bundleId: String? = nil) {
       self.country = country
-      self.language = language
       self.bundleId = bundleId
     }
 
