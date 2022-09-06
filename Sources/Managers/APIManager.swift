@@ -32,15 +32,19 @@ public struct APIManager {
     
     /// The language for the localization of App Store responses.
     let language: String?
+    
+    /// The production's bundleId for application that has different production and debug bundleId
+    let bundleId: String?
 
     /// Initializes `APIManager` to the region or country of an App Store in which the app is available.
     /// By default, all version check requests are performed against the US App Store and the language of the copy/text is returned in English.
     /// - Parameters:
     ///  - country: The country for the App Store in which the app is available.
     ///  - language: The locale to use for the App Store notes. The default result the API returns is equivalent to passing "en_us", so passing `nil` is equivalent to passing "en_us".
-    public init(country: AppStoreCountry = .unitedStates, language: String? = nil) {
+    public init(country: AppStoreCountry = .unitedStates, language: String? = nil, bundleId: String? = nil) {
       self.country = country
       self.language = language
+      self.bundleId = bundleId
     }
 
     /// The default `APIManager`.
@@ -107,8 +111,16 @@ extension APIManager {
         components.scheme = "https"
         components.host = "itunes.apple.com"
         components.path = "/lookup"
-
-        var items: [URLQueryItem] = [URLQueryItem(name: Constants.bundleID, value: Bundle.main.bundleIdentifier)]
+        
+        var items: [URLQueryItem] = []
+        
+        if let bundleId = bundleId {
+            let item = URLQueryItem(name: Constants.bundleID, value: bundleId)
+            items.append(item)
+        } else {
+            let item = URLQueryItem(name: Constants.bundleID, value: Bundle.main.bundleIdentifier)
+            items.append(item)
+        }
 
         #if os(tvOS)
         let tvOSQueryItem = URLQueryItem(name: Constants.entity, value: Constants.tvSoftware)
